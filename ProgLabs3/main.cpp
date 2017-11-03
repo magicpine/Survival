@@ -1,33 +1,10 @@
-//int main()
-//{
-//	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-//	sf::CircleShape shape(100.f);
-//	shape.setFillColor(sf::Color::Green);
-//
-//	while (window.isOpen())
-//	{
-//		sf::Event event;
-//		while (window.pollEvent(event))
-//		{
-//			if (event.type == sf::Event::Closed)
-//				window.close();
-//		}
-//
-//		window.clear();
-//		window.draw(shape);
-//		window.display();
-//	}
-//
-//	return 0;
-//}
-
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <SFML/Graphics.hpp>
 #include <Windows.h>
 
+#include <SFML/Graphics.hpp>
 
 #pragma region Structs
 
@@ -227,51 +204,6 @@ std::vector<creature> areCreaturesSafe(std::string input)
 				}
 			}
 		}
-		//WORKING CONDITION
-		//int rowIndex = creatures[i].rowIndex;
-		//int colIndex = creatures[i].colIndex;
-		//while (rowIndex < 7 && colIndex < 7)
-		//{
-		//	rowIndex++;
-		//	colIndex++;
-		//	if (map[rowIndex][colIndex] == 1)
-		//	{
-		//		creatures[i].safe = false;
-		//	}
-		//}
-		//rowIndex = creatures[i].rowIndex;
-		//colIndex = creatures[i].colIndex;
-		//while (rowIndex > 0 && colIndex > 0)
-		//{
-		//	rowIndex--;
-		//	colIndex--;
-		//	if (map[rowIndex][colIndex] == 1)
-		//	{
-		//		creatures[i].safe = false;
-		//	}
-		//}
-		//rowIndex = creatures[i].rowIndex;
-		//colIndex = creatures[i].colIndex;
-		//while (rowIndex > 0 && colIndex < 7)
-		//{
-		//	rowIndex--;
-		//	colIndex++;
-		//	if (map[rowIndex][colIndex] == 1)
-		//	{
-		//		creatures[i].safe = false;
-		//	}
-		//}
-		//rowIndex = creatures[i].rowIndex;
-		//colIndex = creatures[i].colIndex;
-		//while (rowIndex < 7 && colIndex > 0)
-		//{
-		//	rowIndex++;
-		//	colIndex--;
-		//	if (map[rowIndex][colIndex] == 1)
-		//	{
-		//		creatures[i].safe = false;
-		//	}
-		//}
 	}
 	return creatures;
 }
