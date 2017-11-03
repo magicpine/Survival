@@ -1,8 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
-#include <vector>
-#include <Windows.h>
+#include <list>
 
 #include <SFML/Graphics.hpp>
 
@@ -20,8 +19,8 @@ struct creature
 
 #pragma region Functions
 
-std::vector<std::string> readFromFile(std::string);
-std::vector<creature> areCreaturesSafe(std::string);
+std::list<std::string> readFromFile(std::string);
+void areCreaturesSafe(std::string, creature[], int);
 unsigned int getBit(int);
 
 #pragma endregion
@@ -30,7 +29,7 @@ unsigned int getBit(int);
 int main()
 {
 	std::string fileName = "../Data/creatures.txt";
-	std::vector<std::string> inputs = {};
+	std::list<std::string> inputs = {};
 	try
 	{
 		inputs = readFromFile(fileName);
@@ -46,51 +45,55 @@ int main()
 	{
 		for each (std::string input in inputs)
 		{
-			std::vector<creature> creatures = areCreaturesSafe(input);
-			if (creatures.size() != 8)
+			if (input.length() != 16)
 			{
-				throw new std::exception("There has to be only 8 creatures!");
+				std::cout << "One of the lines is not 16 units long" << std::endl;
 			}
-			sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), input.c_str());
-			sf::RectangleShape cells[8][8];
-			for (int i = 0; i < 8; i++)
+			else
 			{
-				for (int j = 0; j < 8; j++)
-				{
-					cells[i][j].setSize(sf::Vector2f(50, 50));
-					cells[i][j].setFillColor(sf::Color::White);
-					cells[i][j].setPosition(120 + (i * 60), (j * 60) + 5);
-				}
-			}
-			for each (creature creat in creatures)
-			{
-				cells[creat.colIndex][creat.rowIndex].setFillColor(sf::Color::Green);
-				if (!creat.safe)
-				{
-					cells[creat.colIndex][creat.rowIndex].setOutlineColor(sf::Color::Red);
-					cells[creat.colIndex][creat.rowIndex].setOutlineThickness(5);
-				}
-			}
-			while (window.isOpen())
-			{
-				sf::Event event;
-				while (window.pollEvent(event))
-				{
-					if (event.type == sf::Event::Closed)
-						window.close();
-					if (event.type == sf::Event::KeyPressed)
-						window.close();
-				}
-
-				window.clear();
+				creature creatures[8] = {};
+				areCreaturesSafe(input, creatures, 8);
+				sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), input.c_str());
+				sf::RectangleShape cells[8][8];
 				for (int i = 0; i < 8; i++)
 				{
 					for (int j = 0; j < 8; j++)
 					{
-						window.draw(cells[i][j]);
+						cells[i][j].setSize(sf::Vector2f(50, 50));
+						cells[i][j].setFillColor(sf::Color::White);
+						cells[i][j].setPosition(120 + (i * 60), (j * 60) + 5);
 					}
 				}
-				window.display();
+				for each (creature creat in creatures)
+				{
+					cells[creat.colIndex][creat.rowIndex].setFillColor(sf::Color::Green);
+					if (!creat.safe)
+					{
+						cells[creat.colIndex][creat.rowIndex].setOutlineColor(sf::Color::Red);
+						cells[creat.colIndex][creat.rowIndex].setOutlineThickness(5);
+					}
+				}
+				while (window.isOpen())
+				{
+					sf::Event event;
+					while (window.pollEvent(event))
+					{
+						if (event.type == sf::Event::Closed)
+							window.close();
+						if (event.type == sf::Event::KeyPressed)
+							window.close();
+					}
+
+					window.clear();
+					for (int i = 0; i < 8; i++)
+					{
+						for (int j = 0; j < 8; j++)
+						{
+							window.draw(cells[i][j]);
+						}
+					}
+					window.display();
+				}
 			}
 		}
 	}
@@ -102,10 +105,10 @@ int main()
 	return 0;
 }
 
-std::vector<std::string> readFromFile(std::string fileName)
+std::list<std::string> readFromFile(std::string fileName)
 {
 	std::string line;
-	std::vector<std::string> listOfInputs = {};
+	std::list<std::string> listOfInputs = {};
 	std::ifstream myfile(fileName);
 	if (myfile.is_open())
 	{
@@ -118,26 +121,25 @@ std::vector<std::string> readFromFile(std::string fileName)
 	}
 	return listOfInputs;
 }
-std::vector<creature> areCreaturesSafe(std::string input)
+void areCreaturesSafe(std::string input, creature creatures[], int arraySize)
 {
 	int map[8][8] = { 0 };
-	std::vector<creature> creatures;
-	for (int i = 0; i < input.length(); i += 2)
+	for (int i = 0; i < arraySize; i ++)
 	{
-		creature tmp;
-		tmp.rowIndex = (input[i] - 1) - 48;
-		tmp.colIndex = (input[i + 1] - 1) - 48;
-		map[tmp.rowIndex][tmp.colIndex] = 1;
-		tmp.rowBit = getBit(tmp.colIndex);
-		tmp.colBit = getBit(tmp.rowIndex);
-		creatures.push_back(tmp);
+		std::string tmp = input.substr(0, 2);
+		input = input.erase(0, 2);
+		creatures[i].rowIndex = (tmp[0]) - 49;
+		creatures[i].colIndex = (tmp[1]) - 49;
+		map[creatures[i].rowIndex][creatures[i].colIndex] = 1;
+		creatures[i].rowBit = getBit(creatures[i].colIndex);
+		creatures[i].colBit = getBit(creatures[i].rowIndex);
 	}
-	for (int i = 0; i < creatures.size(); i++)
+	for (int i = 0; i < arraySize; i++)
 	{
 		if (creatures[i].safe)
 		{
 			//Rows And Columns
-			for (int j = i + 1; j < creatures.size(); j++)
+			for (int j = i + 1; j < arraySize; j++)
 			{
 				int checkRow = creatures[i].rowBit & creatures[j].rowBit;
 				int checkCol = creatures[i].colBit & creatures[j].colBit;
@@ -205,7 +207,6 @@ std::vector<creature> areCreaturesSafe(std::string input)
 			}
 		}
 	}
-	return creatures;
 }
 unsigned int getBit(int index)
 {
@@ -228,7 +229,7 @@ unsigned int getBit(int index)
 	case 7:
 		return 1;
 	default:
-		//TODO error
+		throw new std::exception("The input on the file crashed this!");
 		break;
 	}
 }
