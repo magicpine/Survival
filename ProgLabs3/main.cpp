@@ -9,8 +9,6 @@
 
 struct creature
 {
-	unsigned int rowBit = 0;
-	unsigned int colBit = 0;
 	unsigned int rowIndex = -1;
 	unsigned int colIndex = -1;
 	bool safe = true;
@@ -21,7 +19,6 @@ struct creature
 
 std::list<std::string> readFromFile(std::string);
 void areCreaturesSafe(std::string, creature[], int);
-unsigned int getBit(int);
 
 #pragma endregion
 
@@ -131,8 +128,6 @@ void areCreaturesSafe(std::string input, creature creatures[], int arraySize)
 		creatures[i].rowIndex = (tmp[0]) - 49;
 		creatures[i].colIndex = (tmp[1]) - 49;
 		map[creatures[i].rowIndex][creatures[i].colIndex] = 1;
-		creatures[i].rowBit = getBit(creatures[i].colIndex);
-		creatures[i].colBit = getBit(creatures[i].rowIndex);
 	}
 	for (int i = 0; i < arraySize; i++)
 	{
@@ -141,9 +136,7 @@ void areCreaturesSafe(std::string input, creature creatures[], int arraySize)
 			//Rows And Columns
 			for (int j = i + 1; j < arraySize; j++)
 			{
-				int checkRow = creatures[i].rowBit & creatures[j].rowBit;
-				int checkCol = creatures[i].colBit & creatures[j].colBit;
-				if (checkRow != 0 || checkCol != 0)
+				if (creatures[i].rowIndex == creatures[j].rowIndex || creatures[i].colIndex == creatures[j].colIndex)
 				{
 					creatures[i].safe = false;
 					creatures[j].safe = false;
@@ -206,30 +199,5 @@ void areCreaturesSafe(std::string input, creature creatures[], int arraySize)
 				}
 			}
 		}
-	}
-}
-unsigned int getBit(int index)
-{
-	switch (index)
-	{
-	case 0:
-		return 128;
-	case 1:
-		return 64;
-	case 2:
-		return 32;
-	case 3:
-		return 16;
-	case 4:
-		return 8;
-	case 5:
-		return 4;
-	case 6:
-		return 2;
-	case 7:
-		return 1;
-	default:
-		throw new std::exception("The input on the file crashed this!");
-		break;
 	}
 }
