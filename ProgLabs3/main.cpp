@@ -6,7 +6,6 @@
 #include <SFML/Graphics.hpp>
 
 #pragma region Structs
-
 struct creature
 {
 	unsigned int rowIndex = -1;
@@ -14,15 +13,12 @@ struct creature
 	bool safe = true;
 };
 #pragma endregion
-
 #pragma region Functions
 
 std::list<std::string> readFromFile(std::string);
-void areCreaturesSafe(std::string, creature[], int);
+void checkToSeeIfCreaturesAreSafe(std::string, creature[], int);
 
 #pragma endregion
-
-
 int main()
 {
 	std::string fileName = "../Data/creatures.txt";
@@ -49,7 +45,7 @@ int main()
 			else
 			{
 				creature creatures[8] = {};
-				areCreaturesSafe(input, creatures, 8);
+				checkToSeeIfCreaturesAreSafe(input, creatures, 8);
 				sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), input.c_str());
 				sf::RectangleShape cells[8][8];
 				for (int i = 0; i < 8; i++)
@@ -118,7 +114,7 @@ std::list<std::string> readFromFile(std::string fileName)
 	}
 	return listOfInputs;
 }
-void areCreaturesSafe(std::string input, creature creatures[], int arraySize)
+void checkToSeeIfCreaturesAreSafe(std::string input, creature creatures[], int arraySize)
 {
 	int map[8][8] = { 0 };
 	for (int i = 0; i < arraySize; i ++)
