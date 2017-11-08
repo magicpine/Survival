@@ -56,6 +56,7 @@ int main()
 						cells[i][j].setPosition((i * 60) + 5, (j * 60) + 5);
 					}
 				}
+				bool areAllCreaturesSafe = true;
 				for each (creature creat in creatures)
 				{
 					if (creat.safe)
@@ -65,7 +66,12 @@ int main()
 					else
 					{
 						cells[creat.colIndex][creat.rowIndex].setFillColor(sf::Color::Red);
+						areAllCreaturesSafe = false;
 					}
+				}
+				if (areAllCreaturesSafe)
+				{
+					std::cout << "All the Creatures are safe! In input string: "<< input << std::endl;
 				}
 				while (window.isOpen())
 				{
@@ -111,7 +117,6 @@ std::list<std::string> readFromFile(std::string fileName)
 			listOfInputs.push_back(line);
 		}
 		myfile.close();
-		return listOfInputs;
 	}
 	return listOfInputs;
 }
